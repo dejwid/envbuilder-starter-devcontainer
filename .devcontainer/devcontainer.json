@@ -6,7 +6,7 @@
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
     },
-    "ghcr.io/oven-sh/bun-feature:1": {}
+    "ghcr.io/michidk/devcontainers-features/bun:1": {}
   },
   "postCreateCommand": "node --version && npm --version && bun --version"
 }
