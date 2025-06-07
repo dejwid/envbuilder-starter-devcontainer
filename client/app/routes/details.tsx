@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Header } from "../components";
+import { Header, Footer } from "../components";
 
 interface Set {
   id: string;
@@ -85,44 +85,51 @@ export default function Details() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white">
+      <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white flex flex-col">
         <Header />
-        <div className="container mx-auto px-6 py-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="text-6xl mb-4">⏳</div>
-            <p className="text-white/80">Loading workout details...</p>
+        <main className="flex-1">
+          <div className="container mx-auto px-6 py-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="text-6xl mb-4">⏳</div>
+              <p className="text-white/80">Loading workout details...</p>
+            </div>
           </div>
-        </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   if (!workout) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white">
+      <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white flex flex-col">
         <Header />
-        <div className="container mx-auto px-6 py-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="text-6xl mb-4">❌</div>
-            <h1 className="text-2xl font-bold text-white mb-4">Workout Not Found</h1>
-            <p className="text-white/80 mb-8">The requested workout could not be found.</p>
-            <a
-              href="/log"
-              className="bg-[#f0ff65] text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-colors"
-            >
-              Back to Log
-            </a>
+        <main className="flex-1">
+          <div className="container mx-auto px-6 py-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="text-6xl mb-4">❌</div>
+              <h1 className="text-2xl font-bold text-white mb-4">Workout Not Found</h1>
+              <p className="text-white/80 mb-8">The requested workout could not be found.</p>
+              <a
+                href="/log"
+                className="bg-[#f0ff65] text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-colors"
+              >
+                Back to Log
+              </a>
+            </div>
           </div>
-        </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-6 py-8">
+      <main className="flex-1">
+        <div className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
           <div className="mb-6">
@@ -242,7 +249,9 @@ export default function Details() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

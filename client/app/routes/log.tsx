@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Header } from "../components";
+import { Header, Footer } from "../components";
 
 interface Set {
   id: string;
@@ -93,16 +93,17 @@ export default function Log() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-6 py-8">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-8">
-            Workout Log
-          </h1>
+      <main className="flex-1">
+        <div className="container mx-auto px-6 py-8">
+          <div className="max-w-6xl mx-auto">
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-8">
+              Workout Log
+            </h1>
 
-          {workouts.length === 0 ? (
+            {workouts.length === 0 ? (
             <div className="text-center py-16">
               <div className="mb-8">
                 <span className="text-6xl mb-4 block">📊</span>
@@ -191,7 +192,9 @@ export default function Log() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

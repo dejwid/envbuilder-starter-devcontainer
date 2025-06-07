@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header } from "../components";
+import { Header, Footer } from "../components";
 
 interface Set {
   id: string;
@@ -129,10 +129,11 @@ export default function Workout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#36391a] to-transparent text-white flex flex-col">
       <Header />
       
-      <div className="container mx-auto px-6 py-8">
+      <main className="flex-1">
+        <div className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl lg:text-4xl font-bold text-white mb-8">
             {workoutStarted ? 'Current Workout' : 'Start New Workout'}
@@ -282,7 +283,9 @@ export default function Workout() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
