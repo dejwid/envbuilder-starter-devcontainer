@@ -1,43 +1,54 @@
-const exerciseData = [
-  {
-    id: 1,
-    name: "Assisted Standing Triceps Extension (With Towel)",
-    tags: ["Upper Arms", "Triceps", "Shoulders", "Core"],
-    image: "🏋️‍♀️"
-  },
-  {
-    id: 2,
-    name: "Barbell Bicep Curls",
-    tags: ["Upper Arms"],
-    image: "💪"
-  },
-  {
-    id: 3,
-    name: "Push-ups",
-    tags: ["Chest", "Upper Arms", "Shoulders"],
-    image: "🤸‍♂️"
-  },
-  {
-    id: 4,
-    name: "Plank Hold",
-    tags: ["Waist", "Core", "Shoulders", "Upper Arms"],
-    image: "🧘‍♀️"
-  },
-  {
-    id: 5,
-    name: "Squats",
-    tags: ["Upper Legs", "Lower Legs"],
-    image: "🏃‍♀️"
-  },
-  {
-    id: 6,
-    name: "Deadlifts",
-    tags: ["Back"],
-    image: "🏋️"
-  }
-];
+import { useState, useEffect } from "react";
+import { getAllExercises, getExerciseImagePath, type Exercise } from "../utils/exercises";
 
-export function ExerciseResults() {
+interface ExerciseResultsProps {
+  exercises?: Exercise[];
+  searchTerm?: string;
+  category?: string;
+}
+
+export function ExerciseResults({ exercises, searchTerm = "", category = "all" }: ExerciseResultsProps) {
+  const [displayedExercises, setDisplayedExercises] = useState<Exercise[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const exercisesPerPage = 6;
+
+  useEffect(() => {
+    let filteredExercises = exercises || getAllExercises();
+    
+    // Apply search filter
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filteredExercises = filteredExercises.filter(exercise =>
+        exercise.name.toLowerCase().includes(term) ||
+        exercise.primaryMuscles.some(muscle => muscle.toLowerCase().includes(term)) ||
+        exercise.secondaryMuscles.some(muscle => muscle.toLowerCase().includes(term)) ||
+        exercise.equipment?.toLowerCase().includes(term) ||
+        exercise.category.toLowerCase().includes(term)
+      );
+    }
+    
+    setDisplayedExercises(filteredExercises);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [exercises, searchTerm, category]);
+
+  const totalPages = Math.ceil(displayedExercises.length / exercisesPerPage);
+  const startIndex = (currentPage - 1) * exercisesPerPage;
+  const currentExercises = displayedExercises.slice(startIndex, startIndex + exercisesPerPage);
+
+  const loadMore = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const getExerciseTags = (exercise: Exercise) => {
+    const tags = [...exercise.primaryMuscles];
+    if (exercise.equipment) {
+      tags.push(exercise.equipment);
+    }
+    tags.push(exercise.category);
+    return tags.slice(0, 4); // Limit to 4 tags for display
+  };
   return (
     <section className="px-6 lg:px-12 py-16">
       {/* Section Title */}

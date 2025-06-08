@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Header, Footer } from "../components";
+import { getExerciseById, getExerciseImagePath } from "../utils/exercises";
 
 interface Set {
   id: string;
@@ -162,19 +163,48 @@ export default function Log() {
 
                   <div className="mb-4">
                     <p className="text-white/60 text-sm mb-2">Exercises:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {workout.exercises.slice(0, 3).map((exercise) => (
-                        <span
-                          key={exercise.id}
-                          className="px-2 py-1 bg-[#f0ff65]/20 text-[#f0ff65] rounded-full text-xs"
-                        >
-                          {exercise.name}
-                        </span>
-                      ))}
-                      {workout.exercises.length > 3 && (
-                        <span className="px-2 py-1 bg-white/10 text-white/60 rounded-full text-xs">
-                          +{workout.exercises.length - 3} more
-                        </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {workout.exercises.slice(0, 6).map((exercise) => {
+                        const exerciseData = getExerciseById(exercise.name) || getExerciseById(exercise.name.replace(/\s+/g, '_'));
+                        return (
+                          <div
+                            key={exercise.id}
+                            className="bg-white/5 rounded-lg p-3 flex items-center gap-3"
+                          >
+                            {exerciseData && exerciseData.images && exerciseData.images.length > 0 ? (
+                              <img
+                                src={getExerciseImagePath(exerciseData, 0)}
+                                alt={exercise.name}
+                                className="w-12 h-12 object-cover rounded-lg"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                                  if (nextElement) {
+                                    nextElement.style.display = 'flex';
+                                  }
+                                }}
+                              />
+                            ) : null}
+                            <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-lg" style={{ display: exerciseData?.images?.length ? 'none' : 'flex' }}>
+                              🏋️
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-white font-medium text-sm truncate">
+                                {exercise.name}
+                              </p>
+                              <p className="text-white/60 text-xs">
+                                {exercise.sets.length} sets
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {workout.exercises.length > 6 && (
+                        <div className="bg-white/5 rounded-lg p-3 flex items-center justify-center">
+                          <span className="text-white/60 text-sm">
+                            +{workout.exercises.length - 6} more
+                          </span>
+                        </div>
                       )}
                     </div>
                   </div>

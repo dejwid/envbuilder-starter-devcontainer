@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header, Footer } from "../components";
+import { getAllExercises, searchExercises } from "../utils/exercises";
 
 interface Set {
   id: string;
@@ -13,15 +14,6 @@ interface Exercise {
   sets: Set[];
 }
 
-const availableExercises = [
-  "Bench Press", "Squats", "Deadlifts", "Overhead Press", "Barbell Rows",
-  "Pull-ups", "Dips", "Bicep Curls", "Tricep Extensions", "Lateral Raises",
-  "Leg Press", "Leg Curls", "Leg Extensions", "Calf Raises", "Lunges",
-  "Incline Bench Press", "Decline Bench Press", "Chest Flyes", "Lat Pulldowns",
-  "Cable Rows", "Face Pulls", "Shrugs", "Upright Rows", "Hammer Curls",
-  "Preacher Curls", "Close Grip Bench Press", "Skull Crushers", "Dumbbell Press"
-];
-
 export function meta() {
   return [
     { title: "New Workout - Fitness Club" },
@@ -34,6 +26,16 @@ export default function Workout() {
   const [selectedExercise, setSelectedExercise] = useState("");
   const [workoutStarted, setWorkoutStarted] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
+  const [exerciseSearchTerm, setExerciseSearchTerm] = useState("");
+
+  // Get available exercises from the JSON data
+  const allExercises = getAllExercises();
+  const availableExercises = allExercises.map(ex => ex.name);
+  
+  // Filter exercises based on search term
+  const filteredExercises = exerciseSearchTerm.trim()
+    ? searchExercises(exerciseSearchTerm).map(ex => ex.name)
+    : availableExercises;
 
   const startWorkout = () => {
     setWorkoutStarted(true);
@@ -169,27 +171,62 @@ export default function Workout() {
               {/* Add Exercise */}
               <div className="bg-black/20 backdrop-blur-sm rounded-lg p-6">
                 <h3 className="text-xl font-semibold text-white mb-4">Add Exercise</h3>
-                <div className="flex gap-4">
-                  <div className="flex-1">
+                <div className="space-y-4">
+                  {/* Exercise Search */}
+                  <div>
                     <input
-                      list="exercises"
-                      value={selectedExercise}
-                      onChange={(e) => setSelectedExercise(e.target.value)}
-                      placeholder="Search or type exercise name..."
+                      type="text"
+                      value={exerciseSearchTerm}
+                      onChange={(e) => setExerciseSearchTerm(e.target.value)}
+                      placeholder="Search exercises..."
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:border-[#f0ff65]"
                     />
-                    <datalist id="exercises">
-                      {availableExercises.map(exercise => (
-                        <option key={exercise} value={exercise} />
-                      ))}
-                    </datalist>
                   </div>
-                  <button
-                    onClick={addExercise}
-                    className="bg-[#f0ff65] text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-colors"
-                  >
-                    Add
-                  </button>
+                  
+                  {/* Exercise Selection */}
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <input
+                        list="exercises"
+                        value={selectedExercise}
+                        onChange={(e) => setSelectedExercise(e.target.value)}
+                        placeholder="Select or type exercise name..."
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:border-[#f0ff65]"
+                      />
+                      <datalist id="exercises">
+                        {filteredExercises.slice(0, 50).map(exercise => (
+                          <option key={exercise} value={exercise} />
+                        ))}
+                      </datalist>
+                    </div>
+                    <button
+                      onClick={addExercise}
+                      className="bg-[#f0ff65] text-black font-semibold px-6 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-colors"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  
+                  {/* Quick Exercise Suggestions */}
+                  {exerciseSearchTerm.trim() && filteredExercises.length > 0 && (
+                    <div className="max-h-40 overflow-y-auto">
+                      <p className="text-white/60 text-sm mb-2">Suggestions:</p>
+                      <div className="grid grid-cols-1 gap-1">
+                        {filteredExercises.slice(0, 8).map(exercise => (
+                          <button
+                            key={exercise}
+                            onClick={() => {
+                              setSelectedExercise(exercise);
+                              setExerciseSearchTerm("");
+                            }}
+                            className="text-left px-3 py-2 bg-white/5 hover:bg-white/10 rounded text-white/80 hover:text-white transition-colors"
+                          >
+                            {exercise}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
