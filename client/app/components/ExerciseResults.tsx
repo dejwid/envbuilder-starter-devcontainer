@@ -32,8 +32,8 @@ export function ExerciseResults({ exercises, searchTerm = "", category = "all" }
   }, [exercises, searchTerm, category]);
 
   const totalPages = Math.ceil(displayedExercises.length / exercisesPerPage);
-  const startIndex = (currentPage - 1) * exercisesPerPage;
-  const currentExercises = displayedExercises.slice(startIndex, startIndex + exercisesPerPage);
+  const endIndex = currentPage * exercisesPerPage;
+  const currentExercises = displayedExercises.slice(0, endIndex);
 
   const loadMore = () => {
     if (currentPage < totalPages) {
@@ -58,7 +58,7 @@ export function ExerciseResults({ exercises, searchTerm = "", category = "all" }
 
       {/* Exercise Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {exerciseData.map((exercise) => (
+        {currentExercises.map((exercise) => (
           <div
             key={exercise.id}
             className="bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10 hover:border-[#f0ff65]/50 transition-all duration-300 hover:scale-105"
@@ -68,7 +68,15 @@ export function ExerciseResults({ exercises, searchTerm = "", category = "all" }
             
             {/* Exercise Image */}
             <div className="h-48 bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center">
-              <span className="text-6xl">{exercise.image}</span>
+              {exercise.images && exercise.images.length > 0 ? (
+                <img
+                  src={getExerciseImagePath(exercise)}
+                  alt={exercise.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-6xl">💪</span>
+              )}
             </div>
             
             {/* Exercise Content */}
@@ -76,7 +84,7 @@ export function ExerciseResults({ exercises, searchTerm = "", category = "all" }
               {/* Tags Container with fixed height */}
               <div className="mb-4 min-h-[2.5rem] flex items-start">
                 <div className="flex flex-wrap gap-2">
-                  {exercise.tags.map((tag, index) => (
+                  {getExerciseTags(exercise).map((tag, index) => (
                     <span
                       key={tag}
                       className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
@@ -105,11 +113,16 @@ export function ExerciseResults({ exercises, searchTerm = "", category = "all" }
       </div>
 
       {/* Load More Button */}
-      <div className="text-center mt-12">
-        <button className="bg-[#f0ff65] text-black font-semibold px-8 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-all duration-300 transform hover:scale-105">
-          Load More Exercises
-        </button>
-      </div>
+      {currentPage < totalPages && (
+        <div className="text-center mt-12">
+          <button
+            onClick={loadMore}
+            className="bg-[#f0ff65] text-black font-semibold px-8 py-3 rounded-lg hover:bg-[#f0ff65]/90 transition-all duration-300 transform hover:scale-105"
+          >
+            Load More Exercises ({displayedExercises.length - currentExercises.length} remaining)
+          </button>
+        </div>
+      )}
     </section>
   );
 }
