@@ -3,3 +3,6 @@ export { HeroSection } from './HeroSection';
 export { ExercisesSection } from './ExercisesSection';
 export { ExerciseResults } from './ExerciseResults';
 export { Footer } from './Footer';
+export { WorkoutCreator } from './WorkoutCreator';
+export { WorkoutList } from './WorkoutList';
+export { WorkoutLog } from './WorkoutLog';
