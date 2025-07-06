@@ -3,9 +3,6 @@
     "dockerfile": "Dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    },
     "ghcr.io/michidk/devcontainers-features/bun:1.0.1": {}
   },
   "postCreateCommand": "node --version && npm --version && bun --version"
